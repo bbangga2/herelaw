@@ -14,19 +14,19 @@ def index():
 @app.route('/datashoot', methods=['POST'])
 def datashoot():
     
-    # print(request.files)
-    # filename=None
-    # if 'image' in request.files:
-    #     file = request.files['image']
-    #     file.save('uploads/' + file.filename)
-    #     filename = file.filename
-    #     print(filename)
+    print(request.files)
+    filename=None
+    if 'image' in request.files:
+        file = request.files['image']
+        file.save('uploads/' + file.filename)
+        filename = file.filename
+        print(filename)
         
     
-    data = request.get_json() # 클라이언트에서 ajax로 json으로 보내준거(일단 여기서는 체크한 내용) 여기서 받기
-    print(data) # {'location': [{'name': 'location', 'value': '고속도로'}, {'name': 'location', 'value': '횡단보도'}, {'name': 'location', 'value': '집앞'}], 'image': {}}
+    data = json.loads(request.form['location'])  # json 데이터와 파일을 함께 처리하려면 request.form으로 받아서 json화 되어있는 location 로드하기
+    print(data) # [{'name': 'location', 'value': '고속도로'}, {'name': 'location', 'value': '횡단보도'}, {'name': 'location', 'value': '집앞'}]
     json_data = json.dumps(data)
-    locations = [item['value'] for item in data['location'] if item['name'] == 'location'] # 프론트에서 작성한 form안에 name과 value있었는데 그거통해서
+    locations = [item['value'] for item in data if item['name'] == 'location'] # 프론트에서 작성한 form안에 name과 value있었는데 그거통해서
     
 
     # json으로 받은것을 Query형태로 바꾸기

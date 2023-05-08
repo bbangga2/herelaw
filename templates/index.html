@@ -89,15 +89,18 @@
       event.preventDefault();
   
       var locationFormData = $('#location-form').serializeArray();
-      var imageFormData = new FormData();
-      imageFormData.append('image', $('#image')[0].files[0]);
+      // var imageFormData = new FormData();
+      // imageFormData.append('image', $('#image')[0].files[0]);
 
+      var formData = new FormData();  // json데이터와 파일 같이 보내려면 FormData()형태로 contentType: false 해서 보내야함
+      formData.append('location', JSON.stringify(locationFormData));
+      formData.append('image', $('#image')[0].files[0]);
 
       $.ajax({
         type: 'POST',
         url: '/datashoot',
-        data: JSON.stringify({location: locationFormData, image: imageFormData}),
-        contentType: "application/json",
+        data: formData, 
+        contentType: false, //이렇게 false로 보내야함.
         processData: false,
         success: function(response) {
           console.log(response);
