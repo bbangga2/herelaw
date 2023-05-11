@@ -67,6 +67,8 @@
       </div>
     </div>
   </div>
+
+  <div id="result" style="border: 1px solid black; padding: 10px;"></div>
   
   <div class="d-flex justify-content-center my-5">
     <button type="submit" id="submit-btn" class="btn btn-primary">전송</button>
@@ -93,6 +95,7 @@
         contentType: false, //이렇게 false로 보내야함.
         processData: false,
         success: function(response) {
+          $("#result").html(response); // 받은 데이터를 #result 태그에 출력
           console.log(response);
         },
         error: function(xhr, status, error) {

@@ -4,6 +4,8 @@ from db import db_insert
 import pymysql as my
 import json
 import boto3
+import requests
+from chatgpt_api import chatgpt
 
 # # s3 연결하기 위한 처리(만약 로컬 처리면 키값 넣어야한다.)
 # s3 = boto3.resource('s3')
@@ -54,7 +56,22 @@ def submit_survey():
         print("디비왔다")
         db_insert(json_data, msg, filename)
 
-    return '' 
+    # AI api서버에 msg보내고 값 받아서 처리하기 -> return에 chatgpt api로 요약된거 뿌리기
+
+    url = 'http://127.0.0.1:8080/bm25' #  내 ai api 컨테이너 주소
+    data = {
+        'query': msg,
+         'k': 5
+         }
+    response = requests.post(url, json=data)
+    result = response.json()
+    result = result["documents"][0]['content']
+
+    # chatgpt api 사용해 요약된 판례 반환
+    res_gpt = chatgpt(result)
+    print(res_gpt)
+
+    return res_gpt 
 
 # @app.route('/datashoot', methods=['POST'])
 # def datashoot():
