@@ -1,0 +1,123 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+  <meta charset="utf-8">
+  <title>HereLaw(히어로!!!!!!!!!!!)</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/js\css/main.css">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="/static/js/main.js"></script>
+  
+</head>
+<body>
+  <div class="header">
+    내손안의 몇 대 몇, HereLaw
+  </div>
+  <div class="question-arrow-btn-wrapper">
+    <button id="prev-btn">이전</button>
+    <button id="next-btn" style="display: flex; justify-content: center;">다음</button>
+    <button id="submit-button" style="display: none;">제출하기</button>
+  </div>
+  <div class="question-wrapper">
+    <div id="current-question"></div>
+  </div>
+
+  
+  <form id="survey-form">
+    <input type="submit" value="Submit" id="submit-button" style="display: none;">
+  </form>
+  
+  <form id="survey-form">
+    <input type="submit" value="Submit" id="submit-button" style="display: none;">
+  </form>
+  
+  <form id="survey-form">
+    <input type="submit" value="Submit" id="submit-button" style="display: none;">
+  </form>
+
+  <input type="file" id="image-input">
+  <div id="image-preview"></div>
+  
+  <script>
+    const imageInput = document.getElementById('image-input');
+    const imagePreview = document.getElementById('image-preview');
+  
+    imageInput.addEventListener('change', handleImageUpload);
+  
+    function handleImageUpload() {
+      const file = imageInput.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+  
+        $.ajax({
+          type: 'POST',
+          url: '/submit-image',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            const imageUrl = URL.createObjectURL(file);
+            imagePreview.innerHTML = `<img src="${imageUrl}" alt="Uploaded Image" />`;
+  
+            // 제출하기 버튼이 나타났을 때 다음 버튼 숨기기
+            $('#submit-button').show();
+            $('#next-btn').hide();
+          },
+          error: function(xhr, status, error) {
+            alert('이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+          }
+        });
+      } else {
+        alert('파일을 선택해주세요.');
+      }
+    }
+  </script>
+      // 설문지 제출 핸들러
+      $('#survey-form').submit(function(event) {
+        event.preventDefault(); // 기본 동작인 폼 제출 막기
+        submitSurvey();
+      });
+  
+      // 설문지 제출 함수
+      function submitSurvey() {
+        const locationData = JSON.stringify(answerList);
+        const formData = new FormData();
+        formData.append('location', locationData);
+        formData.append('image', $('#image-input')[0].files[0]);
+  
+        $.ajax({
+          type: 'POST',
+          url: '/submit-survey',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            alert('설문조사가 성공적으로 제출되었습니다.');
+            // result.html로 자동으로 넘어가도록 함
+            window.location.href =  '/result';
+          },
+          error: function(xhr, status, error) {
+            alert('설문조사 제출 중 오류가 발생했습니다. 다시 시도해주세요.');
+          }
+        });
+      }
+
+  </script>
+  
+  
+  
+  <script>
+      
+      // 6자리 id 값이 있을 때 handleImageUpload 함수를 보여줌
+      const currentQuestionId = "YOUR_CURRENT_QUESTION_ID"; // Replace with your actual 6-digit question id
+      
+      if (currentQuestionId.length === 6) {
+        $('#image-input').change(function() {
+          handleImageUpload();
+        });
+      }
+  </script>
+</body>
+</html>

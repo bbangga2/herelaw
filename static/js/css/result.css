@@ -1,0 +1,63 @@
+h1 {
+    margin-top: 80px;
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+h2 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#summary,
+#ratio,
+#guide,
+#insurance {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.button {
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100px; 
+    height: 100px; 
+    padding: 30px 30px;
+    background-color: #f0ad4e;
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.button:hover,
+.button:focus,
+.button:active {
+    background-color: #5bc0de;
+}
+
+.button:active {
+    transform: translateY(2px);
+}
+
+#summary .button,
+#ratio .button,
+#guide .button,
+#insurance .button {
+    background-color: #f0ad4e;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.container > div {
+    margin-right: 20px;
+}

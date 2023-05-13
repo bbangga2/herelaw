@@ -1049,44 +1049,52 @@ function submitSurvey() {
 }
 
 
-const imageInput = document.getElementById('image-input');
-const imagePreview = document.getElementById('image-preview');
 
-function handleImageUpload() {
-  const file = imageInput.files[0];
-  if (file) {
-    const formData = new FormData();
-    formData.append('image', file, file.name); // 파일 이름도 함께 보내줘야 함
-    const surveyData = { // 이미지 데이터를 surveyData에 추가
-      location: answerList
-    };
-    formData.append('surveyData', JSON.stringify(surveyData)); // surveyData도 formData에 추가
+
   
-    $.ajax({
-      type: 'POST',
-      url: '/submit-survey-and-image',
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function(response) {
-        const imageUrl = URL.createObjectURL(file);
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        imagePreview.innerHTML = '';
-        imagePreview.appendChild(img);
+$(document).ready(function() {
+  // 파일 선택 창에서 파일을 선택하고 "확인" 버튼을 클릭할 때 실행됩니다.
+  $('#image-input').on('change', function() {
+    handleImageUpload();
+  });
 
-        // 제출하기 버튼이 나타났을 때 다음 버튼 숨기기
-        $('#submit-button').show();
-        $('#next-btn').hide();
-      },
-      error: function(xhr, status, error) {
-        alert('이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+  // 이미지 업로드 함수
+  function handleImageUpload() {
+    const fileInput = $('#image-input').get(0);
+    if (fileInput) {
+      const file = fileInput.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        $.ajax({
+          type: 'POST',
+          url: '/submit-image',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            const imageUrl = URL.createObjectURL(file);
+            const imagePreview = $('#image-preview');
+            imagePreview.html(`<img src="${imageUrl}" alt="Uploaded Image" />`);
+            
+            // 제출하기 버튼이 나타났을 때 다음 버튼 숨기기
+            $('#submit-button').show();
+            $('#next-btn').hide();
+          },
+          error: function(xhr, status, error) {
+            alert('이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+          }
+        });
+      } else {
+        alert('파일을 선택해주세요.');
       }
-    });
-  } else {
-    alert('파일을 선택해주세요.');
+    }
   }
-};
+});
+
+
+
 
 
 

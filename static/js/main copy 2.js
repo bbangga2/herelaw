@@ -1023,7 +1023,7 @@ function convertAnswerListToDict(answerList) {
 
 function submitSurvey() {
   const surveyData = {
-    location: answerList
+    location: convertAnswerListToDict(answerList)
   };
 
   $.ajax({
@@ -1039,7 +1039,7 @@ function submitSurvey() {
         // 서버에서 받은 설문 데이터를 인코딩하여 URL 파라미터로 전달
         var surveyData = encodeURIComponent(JSON.stringify(response));
         // 결과 페이지로 리다이렉트
-        window.location.href = '/result?' + surveyData;
+        window.location.href = '/result';
       }
     },
     error: function (xhr, status, error) {
@@ -1049,44 +1049,42 @@ function submitSurvey() {
 }
 
 
-const imageInput = document.getElementById('image-input');
-const imagePreview = document.getElementById('image-preview');
 
-function handleImageUpload() {
-  const file = imageInput.files[0];
-  if (file) {
-    const formData = new FormData();
-    formData.append('image', file, file.name); // 파일 이름도 함께 보내줘야 함
-    const surveyData = { // 이미지 데이터를 surveyData에 추가
-      location: answerList
-    };
-    formData.append('surveyData', JSON.stringify(surveyData)); // surveyData도 formData에 추가
   
-    $.ajax({
-      type: 'POST',
-      url: '/submit-survey-and-image',
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function(response) {
-        const imageUrl = URL.createObjectURL(file);
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        imagePreview.innerHTML = '';
-        imagePreview.appendChild(img);
+function handleImageUpload() {
+  const fileInput = $('#image-input').get(0);
+  if (fileInput) {
+    const file = fileInput.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('image', file);
 
-        // 제출하기 버튼이 나타났을 때 다음 버튼 숨기기
-        $('#submit-button').show();
-        $('#next-btn').hide();
-      },
-      error: function(xhr, status, error) {
-        alert('이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    });
-  } else {
-    alert('파일을 선택해주세요.');
+      $.ajax({
+        type: 'POST',
+        url: '/submit-image',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          const imageUrl = response.imageUrl;
+          const imagePreview = $('#image-preview');
+          imagePreview.html(`<img src="${imageUrl}" alt="Uploaded Image" />`);
+          
+          // 제출하기 버튼이 나타났을 때 다음 버튼 숨기기
+          $('#submit-button').show();
+          $('#next-btn').hide();
+        },
+        error: function(xhr, status, error) {
+          alert('이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+      });
+    } else {
+      alert('파일을 선택해주세요.');
+    }
   }
-};
+}
+
+
 
 
 
